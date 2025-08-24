@@ -8,14 +8,16 @@ const MobileLayout = () => {
   const isMobile = useIsMobile();
 
   const AppContent = () => (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col h-full bg-background relative">
       <TopNavigation />
-      <ScrollArea className="flex-1">
-        <main className="px-4 py-6 pb-24">
+      <ScrollArea className="flex-1 pb-20">
+        <main className="px-4 py-6">
           <Outlet />
         </main>
       </ScrollArea>
-      <BottomNavigation />
+      <div className="absolute bottom-0 left-0 right-0 bg-background border-t">
+        <BottomNavigation />
+      </div>
     </div>
   );
 
@@ -25,7 +27,7 @@ const MobileLayout = () => {
 
   // Desktop view with iPhone frame
   return (
-    <div className="min-h-screen bg-muted/20 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-muted/20 flex items-center justify-center p-4 overflow-hidden">
       <div className="relative">
         {/* iPhone frame */}
         <div className="w-[375px] h-[812px] bg-black rounded-[3rem] p-2 shadow-2xl">
