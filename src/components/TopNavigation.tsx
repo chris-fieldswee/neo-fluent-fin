@@ -5,6 +5,7 @@ import {
   Bell 
 } from "lucide-react";
 
+
 const topNavItems = [
   { title: "Carbon Insight", href: "/carbon", icon: Leaf },
   { title: "Activity Feed", href: "/activity", icon: Bell },
@@ -16,8 +17,8 @@ export const TopNavigation = () => {
   return (
     <nav className="border-b bg-card/95 backdrop-blur-sm relative z-10">
       <div className="flex h-14 items-center justify-between px-4">
-        <Link to="/" className="text-lg font-bold text-primary">
-          Meniga Neo
+        <Link to="/" className="flex items-center">
+          <img src="/lovable-uploads/10e38df7-16f7-43df-88df-1b1ab96a7a8c.png" alt="Logo" className="h-8 w-auto" />
         </Link>
         
         <div className="flex items-center space-x-1">
