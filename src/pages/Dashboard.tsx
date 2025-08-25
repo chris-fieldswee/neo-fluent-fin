@@ -138,8 +138,8 @@ const Dashboard = () => {
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-base font-medium text-gray-900">Goals Progress</h2>
               <Link to="/planning/goals">
-                <Button variant="ghost" size="sm" className="text-blue-600 text-sm p-0 h-auto flex-shrink-0">
-                  View All <ChevronRight className="w-4 h-4 ml-1" />
+                <Button variant="ghost" size="sm" className="text-blue-600 text-xs p-0 h-auto flex-shrink-0">
+                  View All <ChevronRight className="w-3 h-3 ml-1" />
                 </Button>
               </Link>
             </div>
@@ -148,13 +148,16 @@ const Dashboard = () => {
                 const progress = (goal.currentAmount / goal.targetAmount) * 100;
                 return (
                   <div key={goal.goalId} className={`${index > 0 ? 'pt-4 border-t border-gray-100' : ''}`}>
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2 min-w-0 flex-1">
-                        <span className="text-base flex-shrink-0">{goal.icon}</span>
-                        <span className="font-medium text-gray-900 text-sm truncate">{goal.name}</span>
-                      </div>
-                      <span className="text-sm text-gray-500 tabular-nums flex-shrink-0 ml-2">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-sm flex-shrink-0">{goal.icon}</span>
+                      <span className="font-medium text-gray-900 text-sm truncate flex-1">{goal.name}</span>
+                    </div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs text-gray-500">
                         £{goal.currentAmount.toLocaleString()} / £{goal.targetAmount.toLocaleString()}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        {Math.round(progress)}%
                       </span>
                     </div>
                     <Progress value={progress} className="h-2" />
@@ -175,31 +178,30 @@ const Dashboard = () => {
               {keyBudgets.map((budget, index) => {
                 const isOverBudget = budget.spentAmount > budget.targetAmount;
                 const difference = Math.abs(budget.targetAmount - budget.spentAmount);
+                const percentUsed = Math.round((budget.spentAmount / budget.targetAmount) * 100);
                 return (
                   <div key={budget.budgetId} className={`${index > 0 ? 'pt-4 border-t border-gray-100' : ''}`}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3 min-w-0 flex-1">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          isOverBudget ? 'bg-orange-50' : 'bg-green-50'
-                        }`}>
-                          <span className="text-sm">
-                            {budget.category === 'Groceries' ? '🛒' : '🍴'}
-                          </span>
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="font-medium text-gray-900 text-sm truncate">{budget.category}</p>
-                          <p className="text-xs text-gray-500">
-                            {isOverBudget ? 'Over budget' : 'Under budget'}
-                          </p>
-                        </div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        isOverBudget ? 'bg-orange-50' : 'bg-green-50'
+                      }`}>
+                        <span className="text-sm">
+                          {budget.category === 'Groceries' ? '🛒' : '🍴'}
+                        </span>
                       </div>
-                      <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-gray-900 text-sm truncate">{budget.category}</p>
+                        <p className="text-xs text-gray-500">
+                          £{budget.spentAmount} of £{budget.targetAmount} ({percentUsed}%)
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1 flex-shrink-0">
                         {isOverBudget ? (
-                          <AlertTriangle className="w-4 h-4 text-orange-500" />
+                          <AlertTriangle className="w-3 h-3 text-orange-500" />
                         ) : (
-                          <CheckCircle className="w-4 h-4 text-green-500" />
+                          <CheckCircle className="w-3 h-3 text-green-500" />
                         )}
-                        <span className={`font-semibold text-sm tabular-nums ${
+                        <span className={`font-medium text-xs ${
                           isOverBudget ? 'text-orange-500' : 'text-green-500'
                         }`}>
                           £{difference}
@@ -219,18 +221,16 @@ const Dashboard = () => {
         <div className="px-4">
           <Card className="bg-orange-50 border-orange-200 shadow-sm">
             <CardContent className="p-4">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-3 min-w-0 flex-1">
-                  <AlertTriangle className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
-                  <div className="min-w-0 flex-1">
-                    <p className="font-medium text-gray-900 text-sm mb-1">Heads up!</p>
-                    <p className="text-sm text-gray-600">
-                      Your £{Math.abs(upcomingPayment.amount)} {upcomingPayment.merchant} is due in 3 days. Your projected balance will be low.
-                    </p>
-                  </div>
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-gray-900 text-sm mb-1">Heads up!</p>
+                  <p className="text-xs text-gray-600">
+                    £{Math.abs(upcomingPayment.amount)} {upcomingPayment.merchant} due in 3 days. Balance will be low.
+                  </p>
                 </div>
-                <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-gray-400 flex-shrink-0 ml-2">
-                  <X className="w-4 h-4" />
+                <Button variant="ghost" size="sm" className="h-5 w-5 p-0 text-gray-400 flex-shrink-0">
+                  <X className="w-3 h-3" />
                 </Button>
               </div>
             </CardContent>
@@ -243,12 +243,12 @@ const Dashboard = () => {
         <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 shadow-sm">
           <CardContent className="p-4">
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                <span className="text-sm">💰</span>
+              <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                <span className="text-xs">💰</span>
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm text-gray-700">
-                  Your Round-up rule just moved £0.50 to your Lisbon trip after your Starbucks purchase. Great job! ✈️
+                <p className="text-xs text-gray-700">
+                  Round-up rule moved £0.50 to Lisbon trip from your Starbucks purchase. Great job! ✈️
                 </p>
               </div>
             </div>
