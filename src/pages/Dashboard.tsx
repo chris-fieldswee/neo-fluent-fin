@@ -61,46 +61,44 @@ const Dashboard = () => {
       </div>
 
       {/* Accounts Carousel */}
-      <div>
-        <h2 className="text-base font-medium text-gray-700 mb-3 px-4">Accounts</h2>
+      <div className="px-4">
+        <h2 className="text-base font-medium text-gray-700 mb-3">Accounts</h2>
         <Carousel className="w-full" setApi={setApi}>
-          <CarouselContent>
+          <CarouselContent className="-ml-2">
             {accounts.map((account) => (
-              <CarouselItem key={account.accountId} className="pl-4 basis-[280px]">
-                <div className="pr-2">
-                  <Link to={`/accounts/${account.accountId}`}>
-                    <Card className="bg-white shadow-sm border-gray-100 hover:shadow-md transition-shadow">
-                      <CardContent className="p-4">
-                        <div className="flex items-center gap-3 mb-3">
-                          <img 
-                            src={account.institutionLogoUrl} 
-                            alt={account.institutionName}
-                            className="w-8 h-8 rounded-lg object-contain"
-                          />
-                          <div>
-                            <p className="font-medium text-gray-900 text-sm">
-                              {account.institutionName}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {account.accountName}
-                            </p>
-                          </div>
+              <CarouselItem key={account.accountId} className="pl-2 basis-[280px]">
+                <Link to={`/accounts/${account.accountId}`}>
+                  <Card className="bg-white shadow-sm border-gray-100 hover:shadow-md transition-shadow">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3 mb-3">
+                        <img 
+                          src={account.institutionLogoUrl} 
+                          alt={account.institutionName}
+                          className="w-8 h-8 rounded-lg object-contain"
+                        />
+                        <div>
+                          <p className="font-medium text-gray-900 text-sm">
+                            {account.institutionName}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {account.accountName}
+                          </p>
                         </div>
-                        <div className="text-right">
-                          {account.accountType === 'CREDIT_CARD' ? (
-                            <p className="text-lg font-semibold text-gray-900 tabular-nums">
-                              Spent: £{Math.abs(account.balance.amount).toFixed(2)}
-                            </p>
-                          ) : (
-                            <p className="text-lg font-semibold text-gray-900 tabular-nums">
-                              {account.balance.currency === 'EUR' ? '€' : '£'}{account.balance.amount.toFixed(2)}
-                            </p>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                </div>
+                      </div>
+                      <div className="text-right">
+                        {account.accountType === 'CREDIT_CARD' ? (
+                          <p className="text-lg font-semibold text-gray-900 tabular-nums">
+                            Spent: £{Math.abs(account.balance.amount).toFixed(2)}
+                          </p>
+                        ) : (
+                          <p className="text-lg font-semibold text-gray-900 tabular-nums">
+                            {account.balance.currency === 'EUR' ? '€' : '£'}{account.balance.amount.toFixed(2)}
+                          </p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
               </CarouselItem>
             ))}
           </CarouselContent>
