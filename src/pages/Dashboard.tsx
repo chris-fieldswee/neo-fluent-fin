@@ -3,12 +3,29 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselApi } from "@/components/ui/carousel";
 import { ChevronRight, X, CheckCircle, AlertTriangle } from "lucide-react";
 import { mockData } from "@/lib/mockData";
+import { useEffect, useState } from "react";
 
 const Dashboard = () => {
   const { userProfile, accounts, goals, budgets, cashflowForecast } = mockData;
+  const [api, setApi] = useState<CarouselApi>()
+  const [current, setCurrent] = useState(0)
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    if (!api) {
+      return
+    }
+
+    setCount(api.scrollSnapList().length)
+    setCurrent(api.selectedScrollSnap() + 1)
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1)
+    })
+  }, [api])
   
   // Get time-based greeting
   const getGreeting = () => {
@@ -38,20 +55,20 @@ const Dashboard = () => {
     <div className="space-y-4 pb-6">
       {/* Greeting */}
       <div className="px-4 pt-2">
-        <h1 className="text-xl font-semibold text-primary-content">
+        <h1 className="text-xl font-semibold text-gray-900">
           {getGreeting()}, {userProfile.name.split(' ')[0]} 👋
         </h1>
       </div>
 
       {/* Accounts Carousel */}
       <div className="px-4">
-        <h2 className="text-base font-medium text-secondary-content mb-3">Accounts</h2>
-        <Carousel className="w-full">
+        <h2 className="text-base font-medium text-gray-700 mb-3">Accounts</h2>
+        <Carousel className="w-full" setApi={setApi}>
           <CarouselContent className="-ml-2">
             {accounts.map((account) => (
               <CarouselItem key={account.accountId} className="pl-2 basis-[280px]">
                 <Link to={`/accounts/${account.accountId}`}>
-                  <Card className="bg-surface border-border/20 hover:border-border/40 transition-colors">
+                  <Card className="bg-white shadow-sm border-gray-100 hover:shadow-md transition-shadow">
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3 mb-3">
                         <img 
@@ -60,21 +77,21 @@ const Dashboard = () => {
                           className="w-8 h-8 rounded-lg object-contain"
                         />
                         <div>
-                          <p className="font-medium text-primary-content text-sm">
+                          <p className="font-medium text-gray-900 text-sm">
                             {account.institutionName}
                           </p>
-                          <p className="text-xs text-secondary-content">
+                          <p className="text-xs text-gray-500">
                             {account.accountName}
                           </p>
                         </div>
                       </div>
                       <div className="text-right">
                         {account.accountType === 'CREDIT_CARD' ? (
-                          <p className="text-lg font-semibold text-primary-content tabular-nums">
+                          <p className="text-lg font-semibold text-gray-900 tabular-nums">
                             Spent: £{Math.abs(account.balance.amount).toFixed(2)}
                           </p>
                         ) : (
-                          <p className="text-lg font-semibold text-primary-content tabular-nums">
+                          <p className="text-lg font-semibold text-gray-900 tabular-nums">
                             {account.balance.currency === 'EUR' ? '€' : '£'}{account.balance.amount.toFixed(2)}
                           </p>
                         )}
@@ -86,11 +103,24 @@ const Dashboard = () => {
             ))}
           </CarouselContent>
         </Carousel>
+        
+        {/* Carousel Dots */}
+        <div className="flex justify-center mt-4 space-x-1">
+          {Array.from({ length: count }, (_, index) => (
+            <button
+              key={index}
+              className={`w-2 h-2 rounded-full transition-colors ${
+                index + 1 === current ? 'bg-blue-500' : 'bg-gray-300'
+              }`}
+              onClick={() => api?.scrollTo(index)}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Safe to Spend */}
       <div className="px-4">
-        <Card className="bg-gradient-to-br from-primary to-primary-variant text-white border-0">
+        <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0 shadow-sm">
           <CardContent className="p-6">
             <div className="space-y-2">
               <p className="text-sm opacity-90">Safe to spend</p>
@@ -104,9 +134,9 @@ const Dashboard = () => {
       {/* Goals Progress */}
       <div className="px-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base font-medium text-primary-content">Goals Progress</h2>
+          <h2 className="text-base font-medium text-gray-900">Goals Progress</h2>
           <Link to="/planning/goals">
-            <Button variant="ghost" size="sm" className="text-accent-blue text-sm p-0 h-auto">
+            <Button variant="ghost" size="sm" className="text-blue-600 text-sm p-0 h-auto">
               View All <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </Link>
@@ -115,14 +145,14 @@ const Dashboard = () => {
           {activeGoals.map((goal) => {
             const progress = (goal.currentAmount / goal.targetAmount) * 100;
             return (
-              <Card key={goal.goalId} className="bg-surface border-border/20">
+              <Card key={goal.goalId} className="bg-white shadow-sm border-gray-100">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span className="text-base">{goal.icon}</span>
-                      <span className="font-medium text-primary-content text-sm">{goal.name}</span>
+                      <span className="font-medium text-gray-900 text-sm">{goal.name}</span>
                     </div>
-                    <span className="text-sm text-secondary-content tabular-nums">
+                    <span className="text-sm text-gray-500 tabular-nums">
                       £{goal.currentAmount.toLocaleString()} / £{goal.targetAmount.toLocaleString()}
                     </span>
                   </div>
@@ -136,36 +166,36 @@ const Dashboard = () => {
 
       {/* Budget Health */}
       <div className="px-4">
-        <h2 className="text-base font-medium text-primary-content mb-3">Budget Health</h2>
+        <h2 className="text-base font-medium text-gray-900 mb-3">Budget Health</h2>
         <div className="space-y-3">
           {keyBudgets.map((budget) => {
             const isOverBudget = budget.spentAmount > budget.targetAmount;
             const difference = Math.abs(budget.targetAmount - budget.spentAmount);
             return (
-              <Card key={budget.budgetId} className="bg-surface border-border/20">
+              <Card key={budget.budgetId} className="bg-white shadow-sm border-gray-100">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        isOverBudget ? 'bg-sentiment-warning/10' : 'bg-sentiment-positive/10'
+                        isOverBudget ? 'bg-orange-50' : 'bg-green-50'
                       }`}>
                         {budget.category === 'Groceries' ? '🛒' : '🍴'}
                       </div>
                       <div>
-                        <p className="font-medium text-primary-content text-sm">{budget.category}</p>
-                        <p className="text-xs text-secondary-content">
+                        <p className="font-medium text-gray-900 text-sm">{budget.category}</p>
+                        <p className="text-xs text-gray-500">
                           {isOverBudget ? 'Over budget' : 'Under budget'}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       {isOverBudget ? (
-                        <AlertTriangle className="w-4 h-4 text-sentiment-warning" />
+                        <AlertTriangle className="w-4 h-4 text-orange-500" />
                       ) : (
-                        <CheckCircle className="w-4 h-4 text-sentiment-positive" />
+                        <CheckCircle className="w-4 h-4 text-green-500" />
                       )}
                       <span className={`font-semibold text-sm tabular-nums ${
-                        isOverBudget ? 'text-sentiment-warning' : 'text-sentiment-positive'
+                        isOverBudget ? 'text-orange-500' : 'text-green-500'
                       }`}>
                         £{difference}
                       </span>
@@ -181,19 +211,19 @@ const Dashboard = () => {
       {/* Upcoming Payment Alert */}
       {upcomingPayment && (
         <div className="px-4">
-          <Card className="bg-sentiment-warning/5 border-sentiment-warning/20">
+          <Card className="bg-orange-50 border-orange-200 shadow-sm">
             <CardContent className="p-4">
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-3">
-                  <AlertTriangle className="w-5 h-5 text-sentiment-warning mt-0.5" />
+                  <AlertTriangle className="w-5 h-5 text-orange-500 mt-0.5" />
                   <div>
-                    <p className="font-medium text-primary-content text-sm mb-1">Heads up!</p>
-                    <p className="text-sm text-secondary-content">
+                    <p className="font-medium text-gray-900 text-sm mb-1">Heads up!</p>
+                    <p className="text-sm text-gray-600">
                       Your £{Math.abs(upcomingPayment.amount)} {upcomingPayment.merchant} is due in 3 days. Your projected balance will be low.
                     </p>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-secondary-content">
+                <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-gray-400">
                   <X className="w-4 h-4" />
                 </Button>
               </div>
@@ -204,14 +234,14 @@ const Dashboard = () => {
 
       {/* Insight Card */}
       <div className="px-4">
-        <Card className="bg-gradient-to-br from-accent-mint/10 to-accent-mint/5 border-accent-mint/20">
+        <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 shadow-sm">
           <CardContent className="p-4">
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-accent-mint/20 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
                 <span className="text-sm">💰</span>
               </div>
               <div>
-                <p className="text-sm text-primary-content">
+                <p className="text-sm text-gray-700">
                   Your Round-up rule just moved £0.50 to your Lisbon trip after your Starbucks purchase. Great job! ✈️
                 </p>
               </div>
