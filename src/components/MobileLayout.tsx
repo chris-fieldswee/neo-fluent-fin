@@ -11,7 +11,7 @@ const MobileLayout = () => {
     <div className="flex flex-col h-full bg-background relative">
       <TopNavigation />
       <ScrollArea className="flex-1 pb-20">
-        <main className="px-4 py-6">
+        <main>
           <Outlet />
         </main>
       </ScrollArea>
