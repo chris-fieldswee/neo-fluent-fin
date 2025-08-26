@@ -9,7 +9,7 @@ import { InsightCard } from '@/components/dashboard/InsightCard'
 const Dashboard = () => {
   return (
     <div className="bg-gray-50 min-h-screen w-full">
-      <div className="px-4 pt-4 pb-24 space-y-4">
+      <div className="p-4 pb-24 space-y-4">
         <h1 className="font-medium text-lg text-gray-800">
           Good evening, Chloe 👋
         </h1>

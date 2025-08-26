@@ -10,7 +10,7 @@ const MobileLayout = () => {
   const AppContent = () => (
     <div className="flex flex-col h-full bg-background relative">
       <TopNavigation />
-      <ScrollArea className="flex-1 pb-20">
+      <ScrollArea className="flex-1">
         <main>
           <Outlet />
         </main>
