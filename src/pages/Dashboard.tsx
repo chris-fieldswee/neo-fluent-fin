@@ -1,10 +1,7 @@
+import { DashboardScreen } from '@/components/dashboard/DashboardScreen'
+
 const Dashboard = () => {
-  return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-      {/* Dashboard content will be added here */}
-    </div>
-  );
+  return <DashboardScreen />
 };
 
 export default Dashboard;
